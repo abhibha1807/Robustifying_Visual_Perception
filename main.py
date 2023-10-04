@@ -29,23 +29,13 @@ from sklearn.metrics import confusion_matrix, classification_report
 from sklearn.metrics import f1_score
 
 
-# torchvision==0.2.1 -
-# torch==1.0.0 - 
-# matplotlib==2.2.2 - 
-# scipy==1.1.0 - 
-# numpy==1.15.4 - 
-# Pillow==6.0.0
-
-
-
-
 def write_conf_mat(log_save_dir, filename, data, epoch):
-with open(log_save_dir + filename, 'a', newline='') as csvfile:
-    csv_writer = csv.writer(csvfile)
-    csv_writer.writerows([str(epoch)])
-    csv_writer.writerows(['\n'])
-    csv_writer.writerows(data)
-    csv_writer.writerows(['\n'])
+  with open(log_save_dir + filename, 'a', newline='') as csvfile:
+      csv_writer = csv.writer(csvfile)
+      csv_writer.writerows([str(epoch)])
+      csv_writer.writerows(['\n'])
+      csv_writer.writerows(data)
+      csv_writer.writerows(['\n'])
 
 
 # Setup

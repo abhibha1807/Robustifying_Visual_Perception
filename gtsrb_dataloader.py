@@ -1,4 +1,11 @@
 import os
+import numpy as np
+import torch
+import csv
+import random
+import cv2
+import imageio.v2 as imageio
+from torch.utils.data import Dataset
 
 class gtsrbLoader(Dataset):
 
@@ -24,6 +31,13 @@ class gtsrbLoader(Dataset):
     self.org_dataset_path = '/GTSRB/org_dataset/'
     self.aug_dataset_path = '/GTSRB/aug_dataset/'
 
+    self.experiment_list = {'3':{'train': [self.org_dataset_path, self.aug_dataset_path], 'test':self.org_dataset_path},
+                      '4':{'train': [self.org_dataset_path, self.aug_dataset_path], 'test':self.aug_dataset_path},
+                      '5':{'train': [self.aug_dataset_path], 'test':self.org_dataset_path},
+                      '6':{'train': [self.aug_dataset_path], 'test':self.aug_dataset_path},
+                      '2':{'train': [self.org_dataset_path], 'test':self.aug_dataset_path},
+                      '1':{'train': [self.org_dataset_path], 'test':self.org_dataset_path},}
+  
 
   
     classnamesPath =  './GTSRB/classnames.txt'
@@ -34,154 +48,35 @@ class gtsrbLoader(Dataset):
         self.class_names.append(data_lines[i][0:-1])
   
 
-
-    train= []
-    test = []
-
-    if exp == '1':
-        train_org = load_original_dataset(self.org_dataset_path + self.split)
-        train_aug = load_augmented_dataset(self.org_dataset_path + self.split)
-        self.inputs = train_org + train_aug
-        test_org = load_original_dataset('/GTSRB/org_dataset/test')
-
-
-    if exp == '2':
-        train_org = load_original_dataset('/GTSRB/org_dataset/train')
-        train_aug = load_augmented_dataset('/GTSRB/aug_dataset/train')
-        test_aug = load_augmented_dataset('/GTSRB/aug_dataset/test')
-
-    if exp == '3':
-        train_aug = load_augmented_dataset('/GTSRB/aug_dataset/train')
-        test_org = load_original_dataset('/GTSRB/org_dataset/test')
-
-    if exp == '4':
-        train_aug = load_augmented_dataset('/GTSRB/aug_dataset/train')
-        test_aug = load_augmented_dataset('/GTSRB/aug_dataset/test')
-
-    if exp == '5':
-        train_org = load_original_dataset('/GTSRB/org_dataset/train')
-        test_aug = load_augmented_dataset('/GTSRB/aug_dataset/test')
-
-    if exp == '6':
-        train_org = load_original_dataset('/GTSRB/org_dataset/train')
-        test_org = load_original_dataset('/GTSRB/org_dataset/test')
+    def load_exp_dataset(self):
+        for i in range(0, 43):
+            direc = str(i).zfill(5)
+            #train = train_file_paths(train , '/GTSRB/' + direc, i)
+            for x in self.experiment_list[exp][split]:
+                for root, dirs, files in os.walk(x + split + direc):
+                    for file in files:
+                        if '.ppm' in file or '.png' in file:
+                            file_path = os.path.join(root, file)
+                            self.inputs.append(file_path)
+                            self.targets.append(i)
    
 
-            
+    # with open('/GTSRB/GT-final_test.csv', 'r') as file:
+    #     csv_reader = csv.reader(file)
+    #     for row in csv_reader:
+    #         if row[0].split(';')[7] in test_labels:
+    #                test_file.append([row[0].split(';')[0], int(row[0].split(';')[7])])
 
-  
-
-  def load_original_dataset(path):
-
-    def train_file_paths(train, path, label):
-        for root, dirs, files in os.walk(directory_path):
-            for file in files:
-                if '.ppm' in file or '.png' in file:
-                    file_path = os.path.join(root, file)
-                    train.append([file_path, label ])
-            
-        return train
-
-    def test_file_paths(path):
-        for root, dirs, files in os.walk(directory_path):
-            for file in files:
-                if '.ppm' in file or '.png' in file:
-                    file_path = os.path.join(root, file)
-                    test.append(file_path)
-
-    train_classes = []
-
-    for i in range(43):
-        number = f"{i:05d}"
-        train_classes.append(number)
-
-    print(train_classes)
-
-
-    train = []
-
-    for i in range(0, 43):
-        direc = str(i).zfill(5)
-        train = train_file_paths(train , '/GTSRB/' + direc, i)
-
-
-    for i in range(0, 43):
-        direc = str(i).zfill(5)
-        train = train_file_paths(train, '/GTSRB/aug_db/train/' + direc, i)
-        
-    directory_path = '/GTSRB/GTSRB_Test'
-    # directory_path = '/home/abg96/vpe/drive0-storage/VPE/aug_db/test'
-    test_file_paths(directory_path)
-
-  
-
-    import csv
-    test_file = []
-
-    test_labels = [str(i) for i in range(0, 43)]
-    print(test_labels)
-
-    with open('/GTSRB/GTSRB_Test/GT-final_test.csv', 'r') as file:
-        csv_reader = csv.reader(file)
-        for row in csv_reader:
-            if row[0].split(';')[7] in test_labels:
-                   test_file.append([row[0].split(';')[0], int(row[0].split(';')[7])])
-
-    final_test  = []
-    for i in test:
-        for j in test_file:
-            if j[0] in i.split('/')[6]:
-                final_test.append([i, j[1]])
-                break
-
-    print(final_test[0:10])
-    print(len(final_test))
-
-
-
-
-         
-    # aug test
-
-    # final_test= []
+    # final_test  = []
     # for i in test:
-    #     #print(i)
-    #     c = i.split('/')[8]
-    #     c = c.split('.')[0]
-    #     c = c.split('_')[1]
-    #     final_test.append([i, int(c)])
-
+    #     for j in test_file:
+    #         if j[0] in i.split('/')[6]:
+    #             final_test.append([i, j[1]])
+    #             break
 
     # print(final_test[0:10])
+    # print(len(final_test))
 
-
-
-
-
-    # Splitting the data into training and testing sets
-    # train_data, test_data = train_test_split(total, test_size=0.1, random_state=42)
-    # print(type(train_data))
-    # print(type(train_data[0]))
-    # print(train_data[0])
-
-
-    # Printing the results
-
-    train_data = train
-    test_data = final_test
-
-    print("Training data:", len(train_data))
-
-    print("Testing data:", len(test_data))
-
-    if split == 'train':
-        for pair in train_data:
-            self.inputs.append(pair[0])
-            self.targets.append(pair[1])
-    else:
-        for pair in test_data:
-            self.inputs.append(pair[0])
-            self.targets.append(pair[1])
 
     assert(self.n_classes == len(self.class_names))
 
@@ -189,15 +84,6 @@ class gtsrbLoader(Dataset):
     print('Load GTSRB %s: %d samples'%(split, len(self.targets)))
 
         
-        
-    
-    return
-
-  def load_augmented_dataset():
-    return
-
-
-
 
   def __len__(self):
     return len(self.inputs)
