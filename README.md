@@ -5,10 +5,10 @@ The deployment of autonomous robots in real-world scenarios is challenged by "un
 
 
 
-![alt text](http://url/to/img.png)
+![alt text](https://github.com/abhibha1807/Robustifying_Visual_Perception/blob/main/figures/faulty_recon.png)
 
 
-![alt text](http://url/to/img.png)
+![alt text](https://github.com/abhibha1807/Robustifying_Visual_Perception/blob/main/figures/framework.png)
 
 
 ### Dataset
