@@ -18,6 +18,9 @@ We will be releasing the links to our augmented dataset soon
 
 ### Results
 
+![alt text](https://github.com/abhibha1807/Robustifying_Visual_Perception/blob/main/figures/results.png)
+
+
 
 ### Recommended Citation
 ``` @misc{gupta2023enhancing,
