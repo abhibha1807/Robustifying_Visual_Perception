@@ -15,9 +15,6 @@ Link to paper: https://arxiv.org/pdf/2309.08851v1.pdf
 ![alt text](https://github.com/abhibha1807/Robustifying_Visual_Perception/blob/main/figures/framework.png)
 
 
-### Dataset
-We will be releasing the links to our augmented dataset soon
-
 ### Results
 
 ![alt text](https://github.com/abhibha1807/Robustifying_Visual_Perception/blob/main/figures/results.png)
